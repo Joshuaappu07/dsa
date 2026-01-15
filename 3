@@ -1,0 +1,21 @@
+#include <stdio.h>
+#include <stdlib.h>
+int s[4], t = -1, i;
+void pal() {
+    int f = 1;
+    if (t < 0) { printf("Empty\n"); return; }
+    for (i = 0; i <= t; i++) if (s[i] != s[t - i]) f = 0;
+    printf(f ? "Palindrome\n" : "Not\n");
+}
+int main() {
+    int c, v;
+    while (printf("\n1.Push 2.Pop 3.Pal 4.Disp 5.Exit: ") && scanf("%d", &c) && c != 5) {
+        if (c == 1) (t < 3) ? (printf("Val: "), scanf("%d", &s[++t])) : printf("Full\n");
+        else if (c == 2) (t < 0) ? printf("Empty\n") : printf("Popped: %d\n", s[t--]);
+        else if (c == 3) pal();
+        else if (c == 4) {
+            if (t < 0) printf("Empty");
+            for (i = t; i >= 0; i--) printf("%d ", s[i]);
+        } else exit(0);
+    }
+}
