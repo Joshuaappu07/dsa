@@ -1,0 +1,25 @@
+#include <stdio.h>
+#include <math.h>
+#include <ctype.h>
+int s[50], t = -1;
+void push(int x) { s[++t] = x; }
+int pop() { return s[t--]; }
+int main() {
+    char post[50];
+    int i, a, b;
+    printf("Suffix Exp: "); scanf("%s", post);
+    for (i = 0; post[i]; i++) {
+        if (isdigit(post[i])) push(post[i] - '0');
+        else {
+            b = pop(); a = pop();
+            if (post[i] == '+') push(a + b);
+            else if (post[i] == '-') push(a - b);
+            else if (post[i] == '*') push(a * b);
+            else if (post[i] == '/') push(a / b);
+            else if (post[i] == '%') push(a % b);
+            else if (post[i] == '^') push(pow(a, b));
+        }
+    }
+    printf("Result: %d\n", s[t]);
+    return 0;
+}
