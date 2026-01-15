@@ -1,0 +1,76 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <math.h>
+typedef struct node {
+    int co, ex, ey, ez;
+    struct node *link;
+} *NODE;
+NODE getnode(int c, int x, int y, int z) {
+    NODE t = malloc(sizeof(struct node));
+    t->co = c; t->ex = x; t->ey = y; t->ez = z;
+    t->link = t;
+    return t;
+}
+NODE attach(NODE h, int c, int x, int y, int z) {
+    NODE t = getnode(c, x, y, z), cur = h;
+    if (!h) return t;
+    while (cur->link != h) cur = cur->link;
+    cur->link = t; t->link = h;
+    return h;
+}
+NODE readpoly() {
+    NODE h = NULL;
+    int n, c, x, y, z;
+    printf("Terms: "); scanf("%d", &n);
+    while (n--) {
+        printf("c,x,y,z: "); scanf("%d%d%d%d", &c, &x, &y, &z);
+        h = attach(h, c, x, y, z);
+    }
+    return h;
+}
+void display(NODE h) {
+    NODE c = h;
+    if (!h) return;
+    do {
+        printf("%dx^%dy^%dz^%d%s", c->co, c->ex, c->ey, c->ez, (c->link == h) ? "" : " + ");
+    } while ((c = c->link) != h);
+    printf("\n");
+}
+NODE addpoly(NODE p1, NODE p2) {
+    NODE a = p1, b = p2, res = NULL;
+    int done1 = 0, done2 = 0;
+    while (!done1 || !done2) {
+        int v1 = done1 ? -1 : a->ex*100 + a->ey*10 + a->ez;
+        int v2 = done2 ? -1 : b->ex*100 + b->ey*10 + b->ez;
+        if (v1 == v2 && !done1) {
+            res = attach(res, a->co + b->co, a->ex, a->ey, a->ez);
+            done1 = (a->link == p1); a = a->link;
+            done2 = (b->link == p2); b = b->link;
+        } else if (v1 > v2 && !done1) {
+            res = attach(res, a->co, a->ex, a->ey, a->ez);
+            done1 = (a->link == p1); a = a->link;
+        } else if (!done2) {
+            res = attach(res, b->co, b->ex, b->ey, b->ez);
+            done2 = (b->link == p2); b = b->link;
+        }
+    }
+    return res;
+}
+void eval(NODE h) {
+    double x, y, z, r = 0;
+    NODE c = h;
+    printf("Enter x,y,z: "); scanf("%lf%lf%lf", &x, &y, &z);
+    if (h) do { r += c->co * pow(x, c->ex) * pow(y, c->ey) * pow(z, c->ez); } while ((c = c->link) != h);
+    printf("Result: %lf\n", r);
+}
+int main() {
+    int ch;
+    while (1) {
+        printf("\n1.Eval 2.Add 3.Exit\nChoice: "); scanf("%d", &ch);
+        if (ch == 3) break;
+        NODE p1 = readpoly();
+        if (ch == 1) { display(p1); eval(p1); }
+        else { NODE p2 = readpoly(); display(addpoly(p1, p2)); }
+    }
+    return 0;
+}
