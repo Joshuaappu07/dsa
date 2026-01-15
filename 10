@@ -1,0 +1,84 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct node {
+    int data;
+    struct node *l, *r;
+} *NODE;
+NODE create(NODE root, int item) {
+    if (root == NULL) {
+        NODE temp = (NODE)malloc(sizeof(struct node));
+        temp->data = item;
+        temp->l = temp->r = NULL;
+        return temp;
+    }
+    if (item < root->data) root->l = create(root->l, item);
+    else if (item > root->data) root->r = create(root->r, item);
+    return root;
+}
+void search(NODE root, NODE parent, int key) {
+    if (root == NULL) {
+        printf("Key %d not found.\n", key);
+        return;
+    }
+    if (root->data == key) {
+        printf("Key %d found!", key);
+        if (parent == NULL) printf(" It is the Root (No parent).\n");
+        else printf(" Its Parent is: %d\n", parent->data);
+        return;
+    }
+    if (key < root->data) search(root->l, root, key);
+    else search(root->r, root, key);
+}
+void preorder(NODE root) {
+    if (root) {
+        printf("%d ", root->data);
+        preorder(root->l);
+        preorder(root->r);
+    }
+}
+void inorder(NODE root) {
+    if (root) {
+        inorder(root->l);
+        printf("%d ", root->data);
+        inorder(root->r);
+    }
+}
+void postorder(NODE root) {
+    if (root) {
+        postorder(root->l);
+        postorder(root->r);
+        printf("%d ", root->data);
+    }
+}
+int main() {
+    NODE root = NULL;
+    int ch, n, item, i;
+    while (1) {
+        printf("\n1.Insert 2.Traverse 3.Search  4.Exit\nChoice: ");
+        scanf("%d", &ch);
+        switch (ch) {
+            case 1:
+                printf("Enter number of elements: "); scanf("%d", &n);
+                for (i = 0; i < n; i++) {
+                    printf("Enter element %d: ", i + 1); scanf("%d", &item);
+                    root = create(root, item);
+                }
+                break;
+            case 2:
+                if (!root) printf("Tree is empty\n");
+                else {
+                    printf("\nPreorder:  "); preorder(root);
+                    printf("\nInorder:   "); inorder(root);
+                    printf("\nPostorder: "); postorder(root);
+                    printf("\n");
+                }
+                break;
+            case 3:
+                printf("Enter key to search: "); scanf("%d", &item);
+                search(root, NULL, item);
+                break;
+            case 4: exit(0);
+        }
+    }
+    return 0;
+}
