@@ -1,0 +1,53 @@
+#include <stdio.h>
+#include <stdlib.h>
+typedef struct node {
+    int ssn;
+    char name[25], dept[10], desg[10];
+    float sal;
+    unsigned long long ph;
+    struct node *prev, *next;
+} NODE;
+NODE *head = NULL, *tail = NULL;
+int cnt = 0;
+void add(int front) {
+    NODE *n = (NODE*)malloc(sizeof(NODE));
+    printf("Enter SSN, Name, Dept, Desg, Sal, Ph: ");
+    scanf("%d %s %s %s %f %llu", &n->ssn, n->name, n->dept, n->desg, &n->sal, &n->ph);
+    n->prev = n->next = NULL;
+    if (!head) head = tail = n;
+    else if (front) { n->next = head; head->prev = n; head = n; }
+    else { tail->next = n; n->prev = tail; tail = n; }
+    cnt++;
+}
+void del(int front) {
+    if (!head) { printf("Empty\n"); return; }
+    NODE *t = front ? head : tail;
+    printf("Deleted: %d\n", t->ssn);
+    if (head == tail) head = tail = NULL;
+    else if (front) { head = head->next; head->prev = NULL; }
+    else { tail = tail->prev; tail->next = NULL; }
+    free(t); cnt--;
+}
+void disp() {
+    NODE *t = head;
+    if (!t) printf("Empty\n");
+    while (t) {
+        printf("%d %s %s %s %.2f %llu\n", t->ssn, t->name, t->dept, t->desg, t->sal, t->ph);
+        t = t->next;
+    }
+    printf("Total: %d\n", cnt);
+}
+int main() {
+    int c, n;
+    while (1) {
+        printf("\n1.Create 2.InsF 3.InsR 4.Disp 5.DelF 6.DelR 7.Exit: ");
+        scanf("%d", &c);
+        if (c == 1) { printf("N: "); scanf("%d", &n); while(n--) add(0); }
+        else if (c == 2) add(1);
+        else if (c == 3) add(0);
+        else if (c == 4) disp();
+        else if (c == 5) del(1);
+        else if (c == 6) del(0);
+        else exit(0);
+    }
+}
