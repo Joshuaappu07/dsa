@@ -1,0 +1,40 @@
+#include <stdio.h>
+char STR[100], PAT[100], REP[100], ANS[100];
+void matchAndReplace() {
+    int i = 0, j = 0, c = 0, m = 0, k, flag = 0;
+    if (PAT[0] == '\0') {
+        printf("\nPattern not found (Empty Pattern)!");
+        return;
+    }
+    while (STR[c] != '\0') {
+        if (STR[m] == PAT[i]) {
+            i++; m++;
+            if (PAT[i] == '\0') { 
+                flag = 1;
+                for (k = 0; REP[k] != '\0'; k++, j++)
+                    ANS[j] = REP[k];
+                i = 0;
+                c = m; 
+            }
+        } else {
+            ANS[j++] = STR[c++];
+            m = c;
+            i = 0;
+        }
+    }
+    ANS[j] = '\0';
+    if (flag) 
+        printf("\nResultant string: %s\n", ANS);
+    else 
+        printf("\nPattern not found!");
+}
+int main() {
+    printf("Enter Main String (STR): ");
+    scanf(" %[^\n]", STR);
+    printf("Enter Pattern String (PAT): ");
+    scanf(" %[^\n]", PAT);
+    printf("Enter Replace String (REP): ");
+    scanf(" %[^\n]", REP);
+    matchAndReplace();
+    return 0;
+}
